@@ -1,14 +1,26 @@
+import argparse
+from Bio import SeqIO
 #A python was used to calculate genome size
+def calculate_genome_size(filename):
+    genome_size = 0
+    # Parse the genome file in FASTA format
+    for record in SeqIO.parse(filename, "fasta"):
+        genome_size += len(record.seq)
+    return genome_size
 
+def main():
+    # Set up argument parser
+    parser = argparse.ArgumentParser(description="Calculate the genome size from a FASTA file.")
+    parser.add_argument("genome_path", type=str, help="Path to the genome FASTA file")
+    
+    # Parse the arguments
+    args = parser.parse_args()
+    
+    # Calculate genome size
+    genome_size = calculate_genome_size(args.genome_path)
+    print(f"{args.genome_path}: {round(genome_size / 1_000_000, 2)} Mbp")
 
+if __name__ == "__main__":
+    main()
 
-#import sys
-def readGenome(filename):
-    genome=''
-    with open (filename,'r') as f:
-        for line in f:
-            if not line[0]=='>':
-                genome += line.rstrip()
-    return genome
-genome = readGenome(genome_path)
-print(genome_path,round(len(genome)/1000000,2), "Mbp")
+# Execution: python calculate genome size path/genome.fasta
